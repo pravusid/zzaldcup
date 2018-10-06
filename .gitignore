@@ -1,6 +1,7 @@
 # Created by https://www.gitignore.io/api/go
 
 .idea/
+.env
 
 ### Go ###
 # Binaries for programs and plugins
