@@ -5,7 +5,6 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"golang-server/api"
-	"golang-server/database"
 )
 
 func main() {
@@ -16,7 +15,6 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	database.Init()
 	api.Routes(e)
 
 	e.Logger.Fatal(e.Start(":8080"))

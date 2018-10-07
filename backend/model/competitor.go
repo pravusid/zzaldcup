@@ -2,7 +2,7 @@ package model
 
 type Competitor struct {
 	BaseModel
-	ImageUrl string
-	Caption  string
-	MatchID  uint64
+	ImageUrl string `json:"image_url"`
+	Caption  string `json:"caption"`
+	MatchID  uint64 `json:"match_id"`
 }
