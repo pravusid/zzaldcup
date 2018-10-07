@@ -21,8 +21,8 @@ func (svc *matchService) Save(match *model.Match) (*model.Match, error) {
 }
 
 func (svc *matchService) FindOne(id uint64) (*model.Match, error) {
-	match := model.Match{}
+	match := new(model.Match)
 	match.ID = id
 	err := database.FindOne(&match)
-	return &match, err
+	return match, err
 }

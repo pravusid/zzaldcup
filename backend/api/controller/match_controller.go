@@ -2,9 +2,9 @@ package controller
 
 import (
 	"github.com/labstack/echo"
+	"golang-server/helper"
 	"golang-server/model"
 	"golang-server/service"
-	"strconv"
 )
 
 func MatchController(g *echo.Group) {
@@ -16,7 +16,7 @@ func MatchController(g *echo.Group) {
 }
 
 func getAllMatches(c echo.Context) error {
-	pageable := model.NewPageable(c.QueryParams())
+	pageable := new(model.Pageable).Of(c.QueryParams())
 	matches, err := service.MatchService.FindAll(pageable)
 	if err != nil {
 		return c.NoContent(404)
@@ -25,16 +25,16 @@ func getAllMatches(c echo.Context) error {
 }
 
 func createMatch(c echo.Context) error {
-	match := model.Match{}
-	if err := c.Bind(&match); err != nil {
+	match := new(model.Match)
+	if err := c.Bind(match); err != nil {
 		return c.NoContent(400)
 	}
-	service.MatchService.Save(&match)
+	service.MatchService.Save(match)
 	return c.NoContent(201)
 }
 
 func getMatch(c echo.Context) error {
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
+	id := helper.ParseInt(c.Param("id"), 0)
 	match, err := service.MatchService.FindOne(id)
 	if err != nil {
 		return c.NoContent(404)
