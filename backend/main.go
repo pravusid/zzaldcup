@@ -5,9 +5,12 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"golang-server/api"
+	"golang-server/database"
 )
 
 func main() {
+	defer database.CloseAll()
+
 	e := echo.New()
 	e.Debug = true
 	e.HTTPErrorHandler = customHTTPErrorHandler
