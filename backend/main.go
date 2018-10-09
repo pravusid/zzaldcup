@@ -5,11 +5,11 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"golang-server/api"
-	"golang-server/database"
+	"golang-server/database/mysql"
 )
 
 func main() {
-	defer database.CloseAll()
+	defer closeAll()
 
 	e := echo.New()
 	e.Debug = true
@@ -25,4 +25,8 @@ func main() {
 
 func customHTTPErrorHandler(err error, e echo.Context) {
 	e.Logger().Debug(err)
+}
+
+func closeAll() {
+	mysql.DB().Close()
 }

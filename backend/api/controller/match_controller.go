@@ -5,6 +5,7 @@ import (
 	"golang-server/helper"
 	"golang-server/model"
 	"golang-server/service"
+	"net/http"
 )
 
 func MatchController(g *echo.Group) {
@@ -19,25 +20,25 @@ func getAllMatches(c echo.Context) error {
 	pageable := new(model.Pageable).Of(c.QueryParams())
 	matches, err := service.MatchService.FindAll(pageable)
 	if err != nil {
-		return c.NoContent(404)
+		return c.NoContent(http.StatusNotFound)
 	}
-	return c.JSON(200, matches)
+	return c.JSON(http.StatusOK, matches)
 }
 
 func createMatch(c echo.Context) error {
 	match := new(model.Match)
 	if err := c.Bind(match); err != nil {
-		return c.NoContent(400)
+		return c.NoContent(http.StatusBadRequest)
 	}
 	service.MatchService.Save(match)
-	return c.NoContent(201)
+	return c.NoContent(http.StatusCreated)
 }
 
 func getMatch(c echo.Context) error {
 	id := helper.ParseInt(c.Param("id"), 0)
 	match, err := service.MatchService.FindOne(id)
 	if err != nil {
-		return c.NoContent(404)
+		return c.NoContent(http.StatusNotFound)
 	}
-	return c.JSON(200, match)
+	return c.JSON(http.StatusOK, match)
 }

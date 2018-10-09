@@ -5,24 +5,26 @@ import (
 	"golang-server/model"
 )
 
-type matchService struct{}
+var MatchService = &matchService{repository: &database.MysqlMatchRepository{}}
 
-var MatchService = &matchService{}
+type matchService struct {
+	repository *database.MysqlMatchRepository
+}
 
 func (svc *matchService) FindAll(pageable *model.Pageable) (*[]model.Match, error) {
 	matches := make([]model.Match, pageable.Limit)
-	err := database.MysqlRepository.FindAll(&matches, pageable)
+	err := svc.repository.FindWithPageable(&matches, pageable)
 	return &matches, err
 }
 
 func (svc *matchService) Save(match *model.Match) (*model.Match, error) {
-	err := database.MysqlRepository.Save(match)
+	err := svc.repository.Save(match)
 	return match, err
 }
 
 func (svc *matchService) FindOne(id uint64) (*model.Match, error) {
 	match := new(model.Match)
 	match.ID = id
-	err := database.MysqlRepository.FindOne(&match)
+	err := svc.repository.FindOne(match)
 	return match, err
 }
