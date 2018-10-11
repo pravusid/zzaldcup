@@ -5,12 +5,16 @@ import (
 	"net/http"
 )
 
-func PlayingController(g *echo.Group) {
+var PlayingController = &playingController{}
+
+type playingController struct{}
+
+func (pc playingController) Routes(g *echo.Group) {
 	g = g.Group("/play")
 
-	g.GET("", defaultPlay)
+	g.GET("", pc.defaultPlay)
 }
 
-func defaultPlay(c echo.Context) error {
+func (pc playingController) defaultPlay(c echo.Context) error {
 	return c.String(http.StatusOK, "Well played!")
 }
