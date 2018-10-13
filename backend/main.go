@@ -13,7 +13,6 @@ func main() {
 
 	e := echo.New()
 	e.Debug = true
-	e.HTTPErrorHandler = customHTTPErrorHandler
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -21,10 +20,6 @@ func main() {
 	api.Routes(e)
 
 	e.Logger.Fatal(e.Start(":8080"))
-}
-
-func customHTTPErrorHandler(err error, e echo.Context) {
-	e.Logger().Debug(err)
 }
 
 func closeAll() {

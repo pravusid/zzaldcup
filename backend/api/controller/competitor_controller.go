@@ -4,9 +4,8 @@ import (
 	"github.com/labstack/echo"
 	"golang-server/model"
 	"golang-server/service"
-	"io"
 	"net/http"
-	"os"
+	"path/filepath"
 )
 
 var CompetitorController = &competitorController{}
@@ -35,25 +34,22 @@ func (cc competitorController) createCompetitors(c echo.Context) error {
 }
 
 func (cc competitorController) saveImage(c echo.Context) error {
+	// TODO: content-type chk
 	file, err := c.FormFile("image")
 	if err != nil {
 		return err
 	}
+
 	src, err := file.Open()
-	if err != nil {
-		return err
-	}
 	defer src.Close()
-
-	dest, err := os.Create(file.Filename)
 	if err != nil {
 		return err
 	}
-	defer dest.Close()
 
-	if _, err = io.Copy(dest, src); err != nil {
-		return err
+	path, err := service.CompetitorService.SaveFile(src, filepath.Ext(file.Filename))
+	if path == "" || err != nil {
+		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	return c.String(http.StatusCreated, "")
+	return c.String(http.StatusCreated, path)
 }
