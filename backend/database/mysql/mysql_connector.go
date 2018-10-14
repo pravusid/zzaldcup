@@ -9,7 +9,7 @@ import (
 
 var db *gorm.DB
 
-func init() {
+func Init() {
 	var err error
 
 	if db, err = gorm.Open("mysql", os.Getenv("DATABASE")); err != nil {
@@ -27,8 +27,8 @@ func init() {
 	}
 }
 
-func DB() *gorm.DB {
-	return db
+func Close() {
+	db.Close()
 }
 
 func autoCreateTables() {

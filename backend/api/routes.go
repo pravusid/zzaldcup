@@ -8,7 +8,7 @@ import (
 func Routes(e *echo.Echo) {
 	g := e.Group("/api")
 
-	controller.MatchController.Routes(g)
-	controller.CompetitorController.Routes(g)
-	controller.PlayingController.Routes(g)
+	controller.MatchController{}.Init(g)
+	controller.CompetitorController{}.Init(g)
+	controller.PlayingController{}.Init(g)
 }

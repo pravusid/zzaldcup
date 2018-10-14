@@ -8,11 +8,9 @@ import (
 	"path/filepath"
 )
 
-var CompetitorController = &competitorController{}
+type CompetitorController struct{}
 
-type competitorController struct{}
-
-func (cc competitorController) Routes(g *echo.Group) {
+func (cc CompetitorController) Init(g *echo.Group) {
 	g = g.Group("/competitor")
 
 	g.GET("", cc.getCompetitors)
@@ -20,11 +18,11 @@ func (cc competitorController) Routes(g *echo.Group) {
 	g.POST("/image", cc.saveImage)
 }
 
-func (cc competitorController) getCompetitors(c echo.Context) error {
+func (CompetitorController) getCompetitors(c echo.Context) error {
 	return c.String(http.StatusOK, "competitor")
 }
 
-func (cc competitorController) createCompetitors(c echo.Context) error {
+func (CompetitorController) createCompetitors(c echo.Context) error {
 	competitors := make([]model.Competitor, 32)
 	if err := c.Bind(&competitors); err != nil {
 		return c.NoContent(http.StatusBadRequest)
@@ -33,7 +31,7 @@ func (cc competitorController) createCompetitors(c echo.Context) error {
 	return c.NoContent(http.StatusCreated)
 }
 
-func (cc competitorController) saveImage(c echo.Context) error {
+func (CompetitorController) saveImage(c echo.Context) error {
 	// TODO: content-type chk
 	file, err := c.FormFile("image")
 	if err != nil {

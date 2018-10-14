@@ -8,11 +8,9 @@ import (
 	"net/http"
 )
 
-var MatchController = &matchController{}
+type MatchController struct{}
 
-type matchController struct{}
-
-func (mc matchController) Routes(g *echo.Group) {
+func (mc MatchController) Init(g *echo.Group) {
 	g = g.Group("/match")
 
 	g.GET("", mc.getAllMatches)
@@ -20,7 +18,7 @@ func (mc matchController) Routes(g *echo.Group) {
 	g.GET("/:id", mc.getMatch)
 }
 
-func (mc matchController) getAllMatches(c echo.Context) error {
+func (MatchController) getAllMatches(c echo.Context) error {
 	pageable := new(model.Pageable).Of(c.QueryParams())
 	matches, err := service.MatchService.FindAll(pageable)
 	if err != nil {
@@ -29,7 +27,7 @@ func (mc matchController) getAllMatches(c echo.Context) error {
 	return c.JSON(http.StatusOK, matches)
 }
 
-func (mc matchController) createMatch(c echo.Context) error {
+func (MatchController) createMatch(c echo.Context) error {
 	match := new(model.Match)
 	if err := c.Bind(match); err != nil {
 		return c.NoContent(http.StatusBadRequest)
@@ -38,7 +36,7 @@ func (mc matchController) createMatch(c echo.Context) error {
 	return c.NoContent(http.StatusCreated)
 }
 
-func (mc matchController) getMatch(c echo.Context) error {
+func (MatchController) getMatch(c echo.Context) error {
 	id := helper.ParseInt(c.Param("id"), 0)
 	match, err := service.MatchService.FindOne(id)
 	if err != nil {

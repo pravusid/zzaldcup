@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/middleware"
 	"golang-server/api"
 	"golang-server/database/mysql"
+	"os"
 )
 
 func main() {
@@ -19,9 +20,9 @@ func main() {
 
 	api.Routes(e)
 
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(os.Getenv("PORT")))
 }
 
 func closeAll() {
-	mysql.DB().Close()
+	mysql.Close()
 }
