@@ -13,13 +13,8 @@ type CompetitorController struct{}
 func (cc CompetitorController) Init(g *echo.Group) {
 	g = g.Group("/competitor")
 
-	g.GET("", cc.getCompetitors)
 	g.POST("", cc.createCompetitors)
 	g.POST("/image", cc.saveImage)
-}
-
-func (CompetitorController) getCompetitors(c echo.Context) error {
-	return c.String(http.StatusOK, "competitor")
 }
 
 func (CompetitorController) createCompetitors(c echo.Context) error {
