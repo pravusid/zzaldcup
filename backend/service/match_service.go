@@ -19,7 +19,7 @@ func (svc *matchService) FindAll(pageable *model.Pageable) (*[]model.Match, erro
 }
 
 func (svc *matchService) Save(match *model.Match) (*model.Match, error) {
-	if !svc.isAvailable(match.Quota) {
+	if !svc.isAvailable(match.Quota) || svc.isSuitablePayload(len(match.Competitors), match.Quota) {
 		return nil, errors.New("등록할 자료 숫자가 유효하지 않습니다")
 	}
 	err := svc.repository.Save(match)
@@ -34,6 +34,13 @@ func (matchService) isAvailable(quota int) bool {
 		}
 	}
 	return false
+}
+
+func (matchService) isSuitablePayload(sizeOfCompetitors int, quota int) bool {
+	if sizeOfCompetitors == 0 {
+		return true
+	}
+	return quota == sizeOfCompetitors
 }
 
 func (svc *matchService) FindOne(id uint64) (*model.Match, error) {
