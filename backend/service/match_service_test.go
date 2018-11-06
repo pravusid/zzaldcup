@@ -39,18 +39,6 @@ func TestMatchService_isSuitablePayload(t *testing.T) {
 	assert.True(t, result)
 }
 
-func TestMatchService_isSuitablePayload_valid_when_zero_competitor(t *testing.T) {
-	// GIVEN
-	sizeOfCompetitors := 0
-	quota := 64
-
-	// WHEN
-	result := MatchService.isSuitablePayload(sizeOfCompetitors, quota)
-
-	// THEN
-	assert.True(t, result)
-}
-
 func TestMatchService_isSuitablePayload_invalid(t *testing.T) {
 	// GIVEN
 	sizeOfCompetitors := 62
