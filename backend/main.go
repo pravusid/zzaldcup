@@ -11,6 +11,7 @@ import (
 
 func main() {
 	defer closeAll()
+	connectAll()
 
 	e := echo.New()
 	e.Debug = true
@@ -21,6 +22,10 @@ func main() {
 	api.Routes(e)
 
 	e.Logger.Fatal(e.Start(os.Getenv("PORT")))
+}
+
+func connectAll() {
+	mysql.Init()
 }
 
 func closeAll() {
