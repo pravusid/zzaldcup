@@ -6,17 +6,21 @@
       </v-toolbar-title>
       <v-toolbar-items>
         <v-btn flat :to="'/'">
-          <span class="mr-2">전체 보기</span>
           <v-icon>list</v-icon>
+          <span class="ml-2">전체 보기</span>
         </v-btn>
         <v-btn flat :to="'/match/new'">
-          <span class="mr-2">새로 만들기</span>
-          <v-icon>note_add</v-icon>
+          <v-icon>add</v-icon>
+          <span class="ml-2">새로 만들기</span>
+        </v-btn>
+        <v-btn flat :to="'/match/mine'">
+          <v-icon>assessment</v-icon>
+          <span class="ml-2">나의 Match</span>
         </v-btn>
       </v-toolbar-items>
       <v-spacer></v-spacer>
       <v-btn flat>
-        <span class="mr-2">Contact us</span>
+        <span class="mr-2">회원등록</span>
         <v-icon>open_in_new</v-icon>
       </v-btn>
     </v-toolbar>
@@ -35,11 +39,11 @@ export default {
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,700');
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,700");
 
 #app {
   font-size: 1em;
-  font-family: 'Noto Sans KR';
+  font-family: "Noto Sans KR";
 }
 .bold {
   font-weight: bold;

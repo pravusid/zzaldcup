@@ -3,6 +3,7 @@ import Router from 'vue-router';
 
 import Home from '@/views/Home.vue';
 import NewMatch from '@/views/NewMatch.vue';
+import NewCompetitors from '@/views/NewCompetitors.vue';
 
 Vue.use(Router);
 
@@ -19,6 +20,11 @@ export default new Router({
       path: '/match/new',
       name: 'newMatch',
       component: NewMatch,
+    },
+    {
+      path: '/competitor/new',
+      name: 'NewCompetitors',
+      component: NewCompetitors,
     },
   ],
 });
