@@ -5,29 +5,22 @@ import (
 	"golang-server/model"
 )
 
-type MysqlRepository struct{}
+type (
+	MysqlRepository struct{}
 
-func (repo *MysqlRepository) Close() {
-	db.Close()
-}
+	Job func(db *gorm.DB) error
+)
 
 func (repo *MysqlRepository) FindOne(model interface{}) (err error) {
-	if err = db.Where(model).Find(model).Error; err != nil {
-		return err
-	}
-	return
+	return db.Where(model).Find(model).Error
 }
 
 func (repo *MysqlRepository) FindAll(model interface{}, condition interface{}) (err error) {
-	if err = db.Where(condition).Find(model).Error; err != nil {
-		return err
-	}
-	return
+	return db.Where(condition).Find(model).Error
 }
 
 func (repo *MysqlRepository) FindWithPageable(models interface{}, pageable *model.Pageable) (err error) {
-	db.Order(pageable.Order).Offset(pageable.Offset).Limit(pageable.Limit).Find(models)
-	return
+	return db.Order(pageable.Order).Offset(pageable.Offset).Limit(pageable.Limit).Find(models).Error
 }
 
 func (repo *MysqlRepository) Save(model interface{}) (err error) {
@@ -40,17 +33,18 @@ func (repo *MysqlRepository) Insert(tx *gorm.DB, model interface{}) (err error) 
 	if !tx.NewRecord(model) {
 		return err
 	}
-	if err = tx.Create(model).Error; err != nil {
-		return err
-	}
-	return
+	return tx.Create(model).Error
 }
 
-func (repo *MysqlRepository) TransactionalJob(fn func(transaction *gorm.DB) error) (err error) {
+func (repo *MysqlRepository) DefaultJob(fn Job) (err error) {
+	return fn(db)
+}
+
+func (repo *MysqlRepository) TransactionalJob(fn Job) (err error) {
 	tx := db.Begin()
 	defer tx.Commit()
 	if err = fn(tx); err != nil {
 		tx.Rollback()
 	}
-	return err
+	return
 }
