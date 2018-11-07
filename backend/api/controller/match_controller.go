@@ -32,8 +32,12 @@ func (MatchController) createMatch(c echo.Context) error {
 	if err := c.Bind(match); err != nil {
 		return c.NoContent(http.StatusBadRequest)
 	}
+	if err := c.Validate(match); err != nil {
+		return c.NoContent(http.StatusBadRequest)
+	}
+
 	if _, err := service.MatchService.Save(match); err != nil {
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.NoContent(http.StatusInternalServerError)
 	}
 	return c.NoContent(http.StatusCreated)
 }

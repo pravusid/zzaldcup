@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/middleware"
 	"golang-server/api"
 	"golang-server/database/mysql"
+	"golang-server/model"
 	"os"
 )
 
@@ -22,6 +23,8 @@ func main() {
 		AllowOrigins: []string{os.Getenv("CLIENT_URI")},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
+
+	e.Validator = model.Validator
 
 	api.Routes(e)
 
