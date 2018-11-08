@@ -3,7 +3,6 @@ package controller
 import (
 	"github.com/labstack/echo"
 	"github.com/satori/go.uuid"
-	"golang-server/helper"
 	"golang-server/model"
 	"golang-server/service"
 	"net/http"
@@ -16,7 +15,7 @@ func (mc MatchController) Init(g *echo.Group) {
 
 	g.GET("", mc.getAllMatches)
 	g.POST("", mc.createMatch)
-	g.GET("/:id", mc.getMatch)
+	g.GET("/:matchName", mc.getMatch)
 }
 
 func (MatchController) getAllMatches(c echo.Context) error {
@@ -43,12 +42,12 @@ func (MatchController) createMatch(c echo.Context) error {
 			UUID:  uuid.NewV4().String(),
 		}
 		if _, err := service.MatchService.SavePrivate(&privateMatch); err != nil {
-			return c.String(http.StatusInternalServerError, err.Error())
+			return c.NoContent(http.StatusInternalServerError)
 		}
 
 	} else {
 		if _, err := service.MatchService.Save(match); err != nil {
-			return c.String(http.StatusInternalServerError, err.Error())
+			return c.NoContent(http.StatusInternalServerError)
 		}
 	}
 
@@ -56,8 +55,8 @@ func (MatchController) createMatch(c echo.Context) error {
 }
 
 func (MatchController) getMatch(c echo.Context) error {
-	id := helper.ParseInt(c.Param("id"), 0)
-	match, err := service.MatchService.FindOne(id)
+	name := c.Param("matchName")
+	match, err := service.MatchService.FindOneByMatchName(name)
 	if err != nil {
 		return c.NoContent(http.StatusNotFound)
 	}

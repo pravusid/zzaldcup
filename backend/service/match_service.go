@@ -54,3 +54,10 @@ func (svc *matchService) FindOne(id uint64) (*model.Match, error) {
 	err := svc.repository.FindOne(match)
 	return match, err
 }
+
+func (svc *matchService) FindOneByMatchName(matchName string) (*model.Match, error) {
+	match := new(model.Match)
+	match.MatchName = matchName
+	err := svc.repository.FindOne(match)
+	return match, err
+}
