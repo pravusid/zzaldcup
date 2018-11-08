@@ -27,9 +27,9 @@ func (svc *competitorService) FindOne(id uint64) (*model.Competitor, error) {
 	return competitor, err
 }
 
-func (svc *competitorService) Save(competitors *[]model.Competitor) (*[]model.Competitor, error) {
-	err := svc.repository.SaveAll(*competitors)
-	return competitors, err
+func (svc *competitorService) Save(competitor *model.Competitor) (*model.Competitor, error) {
+	err := svc.repository.Save(*competitor)
+	return competitor, err
 }
 
 func (svc *competitorService) SaveFile(src io.Reader, ext string) (path string, err error) {

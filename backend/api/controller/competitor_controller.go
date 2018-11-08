@@ -13,16 +13,22 @@ type CompetitorController struct{}
 func (cc CompetitorController) Init(g *echo.Group) {
 	g = g.Group("/competitor")
 
-	g.POST("", cc.createCompetitors)
+	g.POST("", cc.createCompetitor)
 	g.POST("/image", cc.saveImage)
 }
 
-func (CompetitorController) createCompetitors(c echo.Context) error {
-	competitors := make([]model.Competitor, 32)
-	if err := c.Bind(&competitors); err != nil {
+func (CompetitorController) createCompetitor(c echo.Context) error {
+	competitor := new(model.Competitor)
+	if err := c.Bind(competitor); err != nil {
 		return c.NoContent(http.StatusBadRequest)
 	}
-	service.CompetitorService.Save(&competitors)
+
+	_, err := service.MatchService.FindOne(competitor.ID)
+	if err != nil {
+		return c.NoContent(http.StatusNotFound)
+	}
+
+	service.CompetitorService.Save(competitor)
 	return c.NoContent(http.StatusCreated)
 }
 
