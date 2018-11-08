@@ -5,6 +5,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"golang-server/model"
 	"os"
+	"time"
 )
 
 var db *gorm.DB
@@ -19,9 +20,11 @@ func Init() {
 		panic(err)
 	}
 
-	db.LogMode(true)
+	db.DB().SetConnMaxLifetime(60 * time.Second)
+	db.DB().SetMaxIdleConns(0)
 
 	if os.Getenv("PROFILE") == "dev" {
+		db.LogMode(true)
 		autoCreateTables()
 		autoMigrateTables()
 	}
