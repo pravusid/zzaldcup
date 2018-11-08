@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/labstack/echo"
+	"github.com/satori/go.uuid"
 	"golang-server/helper"
 	"golang-server/model"
 	"golang-server/service"
@@ -36,9 +37,21 @@ func (MatchController) createMatch(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	if _, err := service.MatchService.Save(match); err != nil {
-		return c.NoContent(http.StatusInternalServerError)
+	if match.Private {
+		privateMatch := model.PrivateMatch{
+			Match: *match,
+			UUID:  uuid.NewV4().String(),
+		}
+		if _, err := service.MatchService.SavePrivate(&privateMatch); err != nil {
+			return c.String(http.StatusInternalServerError, err.Error())
+		}
+
+	} else {
+		if _, err := service.MatchService.Save(match); err != nil {
+			return c.String(http.StatusInternalServerError, err.Error())
+		}
 	}
+
 	return c.NoContent(http.StatusCreated)
 }
 

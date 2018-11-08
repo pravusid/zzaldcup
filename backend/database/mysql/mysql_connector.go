@@ -38,6 +38,9 @@ func autoCreateTables() {
 	if !db.HasTable(&model.Match{}) {
 		db.CreateTable(&model.Match{})
 	}
+	if !db.HasTable(&model.PrivateMatch{}) {
+		db.CreateTable(&model.PrivateMatch{})
+	}
 	if !db.HasTable(&model.Competitor{}) {
 		db.CreateTable(&model.Competitor{})
 	}
@@ -45,6 +48,7 @@ func autoCreateTables() {
 
 func autoMigrateTables() {
 	db.AutoMigrate(&model.Match{})
+	db.AutoMigrate(&model.PrivateMatch{})
 	db.AutoMigrate(&model.Competitor{})
 }
 
