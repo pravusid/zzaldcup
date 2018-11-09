@@ -34,7 +34,7 @@ func (CompetitorController) createCompetitor(c echo.Context) error {
 
 func (CompetitorController) saveImage(c echo.Context) error {
 	// TODO: content-type chk
-	file, err := c.FormFile("image")
+	file, err := c.FormFile("zzal")
 	if err != nil {
 		return err
 	}
@@ -46,9 +46,9 @@ func (CompetitorController) saveImage(c echo.Context) error {
 	}
 
 	path, err := service.CompetitorService.SaveFile(src, filepath.Ext(file.Filename))
-	if path == "" || err != nil {
+	if path.StringPath() == "" || err != nil {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	return c.String(http.StatusCreated, path)
+	return c.JSON(http.StatusCreated, path)
 }

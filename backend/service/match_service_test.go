@@ -13,7 +13,7 @@ func TestMatchService_isAvailable(t *testing.T) {
 	result := MatchService.isAvailable(quota)
 
 	// THEN
-	assert.True(t, result)
+	assert.NoError(t, result)
 }
 
 func TestMatchService_isAvailable_invalid(t *testing.T) {
@@ -24,7 +24,7 @@ func TestMatchService_isAvailable_invalid(t *testing.T) {
 	result := MatchService.isAvailable(quota)
 
 	// THEN
-	assert.False(t, result)
+	assert.Error(t, result)
 }
 
 func TestMatchService_isSuitablePayload(t *testing.T) {

@@ -3,7 +3,9 @@ package service
 import (
 	"bytes"
 	"crypto/sha256"
+	"fmt"
 	"github.com/stretchr/testify/assert"
+	"golang-server/model"
 	"io"
 	"os"
 	"testing"
@@ -34,26 +36,42 @@ func TestCompetitorService_GenerateFilePath(t *testing.T) {
 	path, presence := FileService.GenerateFilePath(hash, "image", ".jpg")
 
 	// THEN
-	assert.NotEmpty(t, path)
+	assert.NotEmpty(t, path.StringDir())
+	assert.NotEmpty(t, path.StringPath())
 	assert.False(t, presence)
 }
 
 func TestCompetitorService_CreateFile(t *testing.T) {
 	// GIVEN
-	filename := "test_file"
+	path := &model.ImagePath{
+		BaseDir:   "image",
+		Shard:     "0",
+		Checksum:  "1234",
+		Extension: ".jpg",
+	}
 	var file io.Reader = bytes.NewBufferString("something")
-	statAnte := fileExistence(filename)
+	statAnte := fileExistence(path.StringPath())
+
+	// make directories if not exist
+	if _, err := os.Stat(path.BaseDir); os.IsNotExist(err) {
+		os.Mkdir(path.BaseDir, os.FileMode(0775))
+	}
+	dir := path.StringDir()
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		os.Mkdir(dir, os.FileMode(0775))
+	}
 
 	// WHEN
-	FileService.CreateFile(filename, file)
+	err := FileService.CreateFile(path, file)
+	fmt.Println(err)
 
 	// THEN
-	statPost := fileExistence(filename)
+	statPost := fileExistence(path.StringPath())
 
 	assert.False(t, statAnte)
 	assert.True(t, statPost)
 
-	os.Remove(filename)
+	os.Remove(path.StringPath())
 }
 
 func fileExistence(filename string) bool {

@@ -32,7 +32,7 @@ func (svc *competitorService) Save(competitor *model.Competitor) (*model.Competi
 	return competitor, err
 }
 
-func (svc *competitorService) SaveFile(src io.Reader, ext string) (path string, err error) {
+func (svc *competitorService) SaveFile(src io.Reader, ext string) (path *model.ImagePath, err error) {
 	var buffer bytes.Buffer
 	hash, err := FileService.HashingAndBuffering(&src, &buffer)
 
