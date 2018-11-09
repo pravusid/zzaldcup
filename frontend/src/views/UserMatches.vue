@@ -7,7 +7,7 @@ export default {
   ],
 
   data: () => ({
-    host: '/api/match',
+    host: '/api/match/user',
   }),
 };
 </script>

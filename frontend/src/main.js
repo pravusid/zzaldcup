@@ -2,8 +2,6 @@ import '@babel/polyfill';
 import Vue from 'vue';
 
 import Toasted from 'vue-toasted';
-import ImgInputer from 'vue-img-inputer';
-import 'vue-img-inputer/dist/index.css';
 import './plugins/vuetify';
 import './libs/axios';
 
@@ -12,14 +10,13 @@ import router from './router';
 import store from './store';
 
 Vue.use(Toasted, {
-  position: 'bottom-center',
+  position: 'top-center',
   duration: 2000,
 });
-Vue.component('ImgInputer', ImgInputer);
 
 Vue.config.productionTip = false;
 
-new Vue({
+export default new Vue({
   router,
   store,
   render: h => h(App),

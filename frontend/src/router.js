@@ -4,6 +4,7 @@ import Router from 'vue-router';
 import Home from '@/views/Home.vue';
 import NewMatch from '@/views/NewMatch.vue';
 import NewCompetitors from '@/views/NewCompetitors.vue';
+import UserMatches from '@/views/UserMatches.vue';
 
 Vue.use(Router);
 
@@ -22,9 +23,17 @@ export default new Router({
       component: NewMatch,
     },
     {
-      path: '/competitor/new',
-      name: 'NewCompetitors',
+      path: '/match/edit/:matchName',
+      name: 'newCompetitors',
       component: NewCompetitors,
     },
+    {
+      path: '/match/user',
+      name: 'myMatches',
+      component: UserMatches,
+    },
   ],
+  scrollBehavior() {
+    return { x: 0, y: 0 };
+  },
 });

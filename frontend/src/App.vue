@@ -1,21 +1,22 @@
 <template>
   <v-app>
-    <v-toolbar app>
+    <v-toolbar dark color="blue-grey">
       <v-toolbar-title class="headline text-uppercase">
         <span>ZZALDCUP&nbsp;&nbsp;&nbsp;</span>
       </v-toolbar-title>
       <v-toolbar-items>
-        <v-btn flat :to="'/'">
+        <v-btn flat :to="{ path: '/' }" @click="key = Date.now()">
           <v-icon>list</v-icon>
           <span class="ml-2">전체 보기</span>
         </v-btn>
-        <v-btn flat :to="'/match/new'">
+        <v-btn flat :to="{ path: '/match/new' }">
           <v-icon>add</v-icon>
           <span class="ml-2">새로 만들기</span>
         </v-btn>
-        <v-btn flat :to="'/match/mine'">
+        <v-btn flat :to="{ path: '/match/user' }" @click="key = Date.now()">
           <v-icon>assessment</v-icon>
-          <span class="ml-2">나의 Match</span>
+          <span class="ml-2">전체 Match + 미완성 + private</span>
+          <!-- <span class="ml-2">나의 Match</span> -->
         </v-btn>
       </v-toolbar-items>
       <v-spacer></v-spacer>
@@ -25,7 +26,7 @@
       </v-btn>
     </v-toolbar>
     <v-content>
-      <router-view></router-view>
+      <router-view :key="key"></router-view>
     </v-content>
   </v-app>
 </template>
@@ -33,7 +34,7 @@
 <script>
 export default {
   data: () => ({
-    //
+    key: null,
   }),
 };
 </script>
