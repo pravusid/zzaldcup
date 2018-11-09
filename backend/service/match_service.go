@@ -14,6 +14,13 @@ type matchService struct {
 
 func (svc *matchService) FindAll(pageable *model.Pageable) (*[]model.Match, error) {
 	matches := make([]model.Match, pageable.Limit)
+	pageable.Criteria = "available = true and private = false"
+	err := svc.repository.FindWithPageable(&matches, pageable)
+	return &matches, err
+}
+
+func (svc *matchService) FindUserMatches(pageable *model.Pageable) (*[]model.Match, error) {
+	matches := make([]model.Match, pageable.Limit)
 	err := svc.repository.FindWithPageable(&matches, pageable)
 	return &matches, err
 }

@@ -16,6 +16,7 @@ func (mc MatchController) Init(g *echo.Group) {
 	g.GET("", mc.getAllMatches)
 	g.POST("", mc.createMatch)
 	g.GET("/:matchName", mc.getMatch)
+	g.GET("/user", mc.getMatchesOfUser)
 }
 
 func (MatchController) getAllMatches(c echo.Context) error {
@@ -61,4 +62,13 @@ func (MatchController) getMatch(c echo.Context) error {
 		return c.NoContent(http.StatusNotFound)
 	}
 	return c.JSON(http.StatusOK, match)
+}
+
+func (MatchController) getMatchesOfUser(c echo.Context) error {
+	pageable := new(model.Pageable).Of(c.QueryParams())
+	matches, err := service.MatchService.FindUserMatches(pageable)
+	if err != nil {
+		return c.NoContent(http.StatusNotFound)
+	}
+	return c.JSON(http.StatusOK, matches)
 }

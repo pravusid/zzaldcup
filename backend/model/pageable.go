@@ -6,9 +6,10 @@ import (
 )
 
 type Pageable struct {
-	Limit  uint64 `json:"limit"`
-	Offset uint64 `json:"offset"`
-	Order  string
+	Limit    uint64 `json:"limit"`
+	Offset   uint64 `json:"offset"`
+	Order    string `json:"-"`
+	Criteria string `json:"-"`
 }
 
 func (pageable *Pageable) Of(params url.Values) *Pageable {

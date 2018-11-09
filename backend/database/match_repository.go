@@ -12,7 +12,7 @@ type MysqlMatchRepository struct {
 
 func (repo *MysqlMatchRepository) FindWithPageable(models interface{}, pageable *model.Pageable) (err error) {
 	return repo.DefaultJob(func(db *gorm.DB) error {
-		data := db.Where("available = true and private = false").Order(pageable.Order)
+		data := db.Where(pageable.Criteria).Order(pageable.Order)
 		return data.Offset(pageable.Offset).Limit(pageable.Limit).Find(models).Error
 	})
 }
