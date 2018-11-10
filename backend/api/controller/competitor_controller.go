@@ -46,7 +46,8 @@ func (CompetitorController) saveImage(c echo.Context) error {
 	}
 
 	path, err := service.CompetitorService.SaveFile(src, filepath.Ext(file.Filename))
-	if path.StringPath() == "" || err != nil {
+	_, pathErr := path.StringPath()
+	if err != nil || pathErr != nil {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 

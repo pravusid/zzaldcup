@@ -36,8 +36,15 @@ func TestCompetitorService_GenerateFilePath(t *testing.T) {
 	path, presence := FileService.GenerateFilePath(hash, "image", ".jpg")
 
 	// THEN
-	assert.NotEmpty(t, path.StringDir())
-	assert.NotEmpty(t, path.StringPath())
+	strDir, dirErr := path.StringDir()
+	strPath, pathErr := path.StringPath()
+
+	if dirErr != nil || pathErr != nil {
+		t.Fail()
+	}
+
+	assert.NotEmpty(t, strDir)
+	assert.NotEmpty(t, strPath)
 	assert.False(t, presence)
 }
 
@@ -50,15 +57,24 @@ func TestCompetitorService_CreateFile(t *testing.T) {
 		Extension: ".jpg",
 	}
 	var file io.Reader = bytes.NewBufferString("something")
-	statAnte := fileExistence(path.StringPath())
+
+	strPathAnte, pathErrAnte := path.StringPath()
+	if pathErrAnte != nil {
+		t.Fail()
+	}
+	statAnte := fileExistence(strPathAnte)
 
 	// make directories if not exist
 	if _, err := os.Stat(path.BaseDir); os.IsNotExist(err) {
 		os.Mkdir(path.BaseDir, os.FileMode(0775))
 	}
-	dir := path.StringDir()
-	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		os.Mkdir(dir, os.FileMode(0775))
+	strDir, dirErr := path.StringDir()
+	if dirErr != nil {
+		t.Fail()
+	}
+
+	if _, err := os.Stat(strDir); os.IsNotExist(err) {
+		os.Mkdir(strDir, os.FileMode(0775))
 	}
 
 	// WHEN
@@ -66,12 +82,16 @@ func TestCompetitorService_CreateFile(t *testing.T) {
 	fmt.Println(err)
 
 	// THEN
-	statPost := fileExistence(path.StringPath())
+	strPath, pathErr := path.StringPath()
+	if pathErr != nil {
+		t.Fail()
+	}
+	statPost := fileExistence(strPath)
 
 	assert.False(t, statAnte)
 	assert.True(t, statPost)
 
-	os.Remove(path.StringPath())
+	os.Remove(strPath)
 }
 
 func fileExistence(filename string) bool {

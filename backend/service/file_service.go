@@ -35,20 +35,25 @@ func (fileService) GenerateFilePath(hash []byte, baseDir string, extension strin
 		os.Mkdir(baseDir, os.FileMode(0775))
 	}
 
-	dir := path.StringDir()
+	dir, _ := path.StringDir()
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		os.Mkdir(dir, os.FileMode(0775))
 	}
 
-	stringPath := path.StringPath()
-	if _, err := os.Stat(stringPath); os.IsNotExist(err) {
+	strPath, _ := path.StringPath()
+	if _, err := os.Stat(strPath); os.IsNotExist(err) {
 		return &path, false
 	}
 	return &path, true
 }
 
 func (fileService) CreateFile(path *model.ImagePath, data io.Reader) error {
-	target, err := os.Create(path.StringPath())
+	strPath, pathErr := path.StringPath()
+	if pathErr != nil {
+		return pathErr
+	}
+
+	target, err := os.Create(strPath)
 	defer target.Close()
 	if err != nil {
 		return err
