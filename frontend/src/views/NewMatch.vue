@@ -24,7 +24,7 @@
 
 <script>
 import axios from 'axios';
-import _ from 'lodash';
+import debounce from 'lodash/debounce';
 
 export default {
   data: () => ({
@@ -59,7 +59,7 @@ export default {
 
   watch: {
     // eslint-disable-next-line
-    'match.matchName': _.debounce(function (val) {
+    'match.matchName': debounce(function(val) {
       if (val === undefined) return;
       const duplicate = '이미 존재하는 이름입니다';
       axios.get(`/api/match/${this.match.matchName}`)
