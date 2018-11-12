@@ -28,7 +28,8 @@ func (svc *competitorService) FindOne(id uint64) (*model.Competitor, error) {
 }
 
 func (svc *competitorService) Save(competitor *model.Competitor) (*model.Competitor, error) {
-	err := svc.repository.Save(*competitor)
+	err := svc.repository.Save(competitor)
+	competitor.ID = competitor.BaseModel.ID
 	return competitor, err
 }
 

@@ -25,6 +25,20 @@ func (svc *matchService) FindUserMatches(pageable *model.Pageable) (*[]model.Mat
 	return &matches, err
 }
 
+func (svc *matchService) FindOne(id uint64) (*model.Match, error) {
+	match := new(model.Match)
+	match.ID = id
+	err := svc.repository.FindOne(match)
+	return match, err
+}
+
+func (svc *matchService) FindOneByMatchName(matchName string) (*model.Match, error) {
+	match := new(model.Match)
+	match.MatchName = matchName
+	err := svc.repository.FindOne(match)
+	return match, err
+}
+
 func (svc *matchService) Save(match *model.Match) (*model.Match, error) {
 	if err := svc.isAvailable(match.Quota); err != nil {
 		return nil, err
@@ -53,18 +67,4 @@ func (matchService) isAvailable(quota int) error {
 
 func (matchService) isSuitablePayload(sizeOfCompetitors int, quota int) bool {
 	return quota == sizeOfCompetitors
-}
-
-func (svc *matchService) FindOne(id uint64) (*model.Match, error) {
-	match := new(model.Match)
-	match.ID = id
-	err := svc.repository.FindOne(match)
-	return match, err
-}
-
-func (svc *matchService) FindOneByMatchName(matchName string) (*model.Match, error) {
-	match := new(model.Match)
-	match.MatchName = matchName
-	err := svc.repository.FindOne(match)
-	return match, err
 }
