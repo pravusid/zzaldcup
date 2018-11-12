@@ -10,6 +10,12 @@ type MysqlCompetitorRepository struct {
 	mysql.MysqlRepository
 }
 
+func (repo *MysqlCompetitorRepository) FindWithCursor(models interface{}, criteria *model.Competitor) (err error) {
+	return repo.DefaultJob(func(db *gorm.DB) (err error) {
+		return db.Where(" match_id = ? AND id >= ?", criteria.MatchID, criteria.ID).Find(models).Error
+	})
+}
+
 func (repo *MysqlCompetitorRepository) SaveAll(models []model.Competitor) (err error) {
 	return repo.TransactionalJob(func(tx *gorm.DB) (err error) {
 		for _, m := range models {

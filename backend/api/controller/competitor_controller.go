@@ -14,23 +14,28 @@ type CompetitorController struct{}
 func (cc CompetitorController) Init(g *echo.Group) {
 	g = g.Group("/competitor")
 
-	g.POST("", cc.createCompetitor)
+	g.GET("", cc.getCompetitors)
 	g.POST("/image", cc.saveImage)
 }
 
-func (CompetitorController) createCompetitor(c echo.Context) error {
-	competitor := new(model.Competitor)
-	if err := c.Bind(competitor); err != nil {
-		return c.NoContent(http.StatusBadRequest)
-	}
+func (CompetitorController) getCompetitors(c echo.Context) error {
+	competitorId := helper.ParseInt(c.QueryParam("id"), 0)
+	matchId := helper.ParseInt(c.QueryParam("matchId"), 0)
 
-	_, err := service.MatchService.FindOne(competitor.ID)
-	if err != nil {
+	match, err := service.MatchService.FindOne(matchId)
+	if competitorId == 0 || matchId == 0 || err != nil {
 		return c.NoContent(http.StatusNotFound)
 	}
 
-	service.CompetitorService.Save(competitor)
-	return c.NoContent(http.StatusCreated)
+	criteria := new(model.Competitor)
+	criteria.ID = competitorId
+	criteria.MatchID = match.ID
+
+	competitors := make([]model.Competitor, 16)
+	if _, err := service.CompetitorService.FindLatest(&competitors, criteria); err != nil {
+		return c.NoContent(http.StatusInternalServerError)
+	}
+	return c.JSON(http.StatusOK, competitors)
 }
 
 func (CompetitorController) saveImage(c echo.Context) error {
@@ -60,8 +65,9 @@ func (CompetitorController) saveImage(c echo.Context) error {
 	if err != nil {
 		return c.NoContent(http.StatusBadRequest)
 	}
-	match, err := service.MatchService.FindOneByMatchName(values["matchName"].(string))
-	if err != nil {
+	matchId := uint64(values["matchId"].(float64))
+	match, err := service.MatchService.FindOne(matchId)
+	if matchId == 0 || err != nil {
 		return c.NoContent(http.StatusNotFound)
 	}
 

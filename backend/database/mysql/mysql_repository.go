@@ -15,8 +15,8 @@ func (repo *MysqlRepository) FindOne(model interface{}) (err error) {
 	return db.Where(model).Find(model).Error
 }
 
-func (repo *MysqlRepository) FindAll(model interface{}, condition interface{}) (err error) {
-	return db.Where(condition).Find(model).Error
+func (repo *MysqlRepository) FindAll(model interface{}, criteria interface{}) (err error) {
+	return db.Where(criteria).Find(model).Error
 }
 
 func (repo *MysqlRepository) FindWithPageable(models interface{}, pageable *model.Pageable) (err error) {
