@@ -12,7 +12,7 @@ type (
 )
 
 func (repo *MysqlRepository) FindOne(model interface{}) (err error) {
-	return db.Where(model).Find(model).Error
+	return db.Find(model).Error
 }
 
 func (repo *MysqlRepository) FindAll(model interface{}, criteria interface{}) (err error) {

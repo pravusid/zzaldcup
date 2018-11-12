@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"github.com/jinzhu/gorm"
 	"golang-server/database"
 	"golang-server/model"
 )
@@ -36,6 +37,22 @@ func (svc *matchService) FindOneByMatchName(matchName string) (*model.Match, err
 	match := new(model.Match)
 	match.MatchName = matchName
 	err := svc.repository.FindOne(match)
+	return match, err
+}
+
+func (svc *matchService) FindOneAndRelatedByMatchName(matchName string) (*model.Match, error) {
+	match := new(model.Match)
+	competitors := make([]model.Competitor, 16)
+	err := svc.repository.TransactionalJob(func(tx *gorm.DB) error {
+		if err := tx.Where("match_name = ?", matchName).Find(match).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(match).Related(&competitors).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+	match.Competitors = competitors
 	return match, err
 }
 

@@ -15,7 +15,7 @@ func (mc MatchController) Init(g *echo.Group) {
 
 	g.GET("", mc.getAllMatches)
 	g.POST("", mc.createMatch)
-	g.GET("/:matchName", mc.getMatch)
+	g.GET("/detail/:matchName", mc.getMatch)
 	g.GET("/user", mc.getMatchesOfUser)
 }
 
@@ -56,8 +56,15 @@ func (MatchController) createMatch(c echo.Context) error {
 }
 
 func (MatchController) getMatch(c echo.Context) error {
-	name := c.Param("matchName")
-	match, err := service.MatchService.FindOneByMatchName(name)
+	matchName := c.Param("matchName")
+	var match *model.Match
+	var err error
+	if c.QueryParam("related") == "true" {
+		match, err = service.MatchService.FindOneAndRelatedByMatchName(matchName)
+		c.Logger().Info(match)
+	} else {
+		match, err = service.MatchService.FindOneByMatchName(matchName)
+	}
 	if err != nil {
 		return c.NoContent(http.StatusNotFound)
 	}
