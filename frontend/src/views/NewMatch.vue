@@ -23,8 +23,8 @@
 </template>
 
 <script>
-import axios from 'axios';
-import debounce from 'lodash/debounce';
+import debounce from 'lodash/fp/debounce';
+import axios from '../libs/axios';
 
 export default {
   data: () => ({
@@ -59,16 +59,16 @@ export default {
 
   watch: {
     // eslint-disable-next-line
-    'match.matchName': debounce(function(val) {
+    'match.matchName': debounce(1000, function(val) {
       if (val === undefined) return;
       const duplicate = '이미 존재하는 이름입니다';
-      axios.get(`/api/match/${this.match.matchName}`)
+      axios.get(`/api/match/detail/${this.match.matchName}`)
         .then(() => {
           this.msg = duplicate;
         }).catch(({ response }) => {
           this.msg = (response.status === 404) ? '' : duplicate;
         });
-    }, 500),
+    }),
   },
 };
 </script>

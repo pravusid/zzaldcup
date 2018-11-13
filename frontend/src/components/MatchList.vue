@@ -5,7 +5,7 @@
         <v-card>
           <v-container fluid grid-list-md>
             <v-layout row wrap="">
-              <v-flex xs6 lg3 v-for="item in items" :key="item.id">
+              <v-flex xs6 lg3 v-for="(item, index) in items" :key="index">
                 <v-card>
                   <v-img height="200px">
                     <v-container fill-height fluid pa-2>
@@ -48,8 +48,8 @@
 </template>
 
 <script>
-import axios from 'axios';
 import InfiniteLoading from 'vue-infinite-loading';
+import axios from '../libs/axios';
 
 export default {
   components: {
