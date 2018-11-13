@@ -56,20 +56,18 @@ func (svc *matchService) FindOneAndRelatedByMatchName(matchName string) (*model.
 	return match, err
 }
 
-func (svc *matchService) Save(match *model.Match) (*model.Match, error) {
+func (svc *matchService) Save(match *model.Match) error {
 	if err := svc.isAvailable(match.Quota); err != nil {
-		return nil, err
+		return err
 	}
-	err := svc.repository.Save(match)
-	return match, err
+	return svc.repository.Save(match)
 }
 
-func (svc *matchService) SavePrivate(match *model.PrivateMatch) (*model.PrivateMatch, error) {
+func (svc *matchService) SavePrivate(match *model.PrivateMatch) error {
 	if err := svc.isAvailable(match.Match.Quota); err != nil {
-		return nil, err
+		return err
 	}
-	err := svc.repository.Save(match)
-	return match, err
+	return svc.repository.Save(match)
 }
 
 func (matchService) isAvailable(quota int) error {
@@ -79,7 +77,7 @@ func (matchService) isAvailable(quota int) error {
 			return nil
 		}
 	}
-	return errors.New("등록할 자료 숫자가 유효하지 않습니다")
+	return errors.New("error: unavailable quota")
 }
 
 func (matchService) isSuitablePayload(sizeOfCompetitors int, quota int) bool {

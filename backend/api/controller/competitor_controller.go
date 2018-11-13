@@ -96,7 +96,7 @@ func (CompetitorController) saveImage(c echo.Context) error {
 		ImageUrl: strPath,
 		MatchID:  match.ID,
 	}
-	if _, err := service.CompetitorService.Save(competitor, match); err != nil {
+	if err := service.CompetitorService.Save(competitor, match); err != nil {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 

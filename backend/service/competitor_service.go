@@ -18,24 +18,29 @@ func (svc *competitorService) FindLatest(competitors *[]model.Competitor, criter
 	return competitors, svc.repository.FindWithCursor(competitors, criteria)
 }
 
-func (svc *competitorService) Save(competitor *model.Competitor, match *model.Match) (*model.Competitor, error) {
+func (svc *competitorService) Save(competitor *model.Competitor, match *model.Match) error {
 	var count int
 	if err := svc.repository.Count(&count, &model.Competitor{MatchID: competitor.MatchID}); err != nil {
-		return nil, err
+		return err
 	}
 	if count >= match.Quota {
-		return nil, errors.New("더 이상 추가하실 수 없습니다")
+		return errors.New("error: sufficient competitors")
 	}
-	return competitor, svc.repository.Save(competitor)
+	return svc.repository.Save(competitor)
 }
 
-func (svc *competitorService) SaveFile(src io.Reader, ext string) (path *model.ImagePath, err error) {
+func (svc *competitorService) SaveFile(src io.Reader, ext string) (*model.ImagePath, error) {
+	var path *model.ImagePath
+
 	var buffer bytes.Buffer
 	hash, err := FileService.HashingAndBuffering(&src, &buffer)
+	if err != nil {
+		return path, errors.New("error: file has fault")
+	}
 
 	var existence bool
 	if path, existence = FileService.GenerateFilePath(hash, "image", ext); existence {
-		return
+		return path, nil
 	}
 
 	return path, FileService.CreateFile(path, &buffer)

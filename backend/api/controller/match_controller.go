@@ -42,12 +42,12 @@ func (MatchController) createMatch(c echo.Context) error {
 			Match: *match,
 			UUID:  uuid.NewV4().String(),
 		}
-		if _, err := service.MatchService.SavePrivate(&privateMatch); err != nil {
+		if err := service.MatchService.SavePrivate(&privateMatch); err != nil {
 			return c.NoContent(http.StatusInternalServerError)
 		}
 
 	} else {
-		if _, err := service.MatchService.Save(match); err != nil {
+		if err := service.MatchService.Save(match); err != nil {
 			return c.NoContent(http.StatusInternalServerError)
 		}
 	}
