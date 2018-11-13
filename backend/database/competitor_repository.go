@@ -11,8 +11,14 @@ type MysqlCompetitorRepository struct {
 }
 
 func (repo *MysqlCompetitorRepository) FindWithCursor(models interface{}, criteria *model.Competitor) (err error) {
-	return repo.DefaultJob(func(db *gorm.DB) (err error) {
+	return repo.DefaultJob(func(db *gorm.DB) error {
 		return db.Where(" match_id = ? AND id >= ?", criteria.MatchID, criteria.ID).Find(models).Error
+	})
+}
+
+func (repo *MysqlCompetitorRepository) Count(count *int, criteria *model.Competitor) (err error) {
+	return repo.DefaultJob(func(db *gorm.DB) error {
+		return db.Model(&model.Competitor{}).Where(criteria).Count(count).Error
 	})
 }
 

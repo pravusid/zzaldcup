@@ -2,6 +2,7 @@ package service
 
 import (
 	"bytes"
+	"errors"
 	"golang-server/database"
 	"golang-server/model"
 	"io"
@@ -17,9 +18,15 @@ func (svc *competitorService) FindLatest(competitors *[]model.Competitor, criter
 	return competitors, svc.repository.FindWithCursor(competitors, criteria)
 }
 
-func (svc *competitorService) Save(competitor *model.Competitor) (*model.Competitor, error) {
-	err := svc.repository.Save(competitor)
-	return competitor, err
+func (svc *competitorService) Save(competitor *model.Competitor, match *model.Match) (*model.Competitor, error) {
+	var count int
+	if err := svc.repository.Count(&count, &model.Competitor{MatchID: competitor.MatchID}); err != nil {
+		return nil, err
+	}
+	if count >= match.Quota {
+		return nil, errors.New("더 이상 추가하실 수 없습니다")
+	}
+	return competitor, svc.repository.Save(competitor)
 }
 
 func (svc *competitorService) SaveFile(src io.Reader, ext string) (path *model.ImagePath, err error) {
