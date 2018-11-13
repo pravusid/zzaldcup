@@ -65,6 +65,7 @@ func TestCompetitorService_CreateFile(t *testing.T) {
 	statAnte := fileExistence(strPathAnte)
 
 	// make directories if not exist
+	defer os.RemoveAll(path.BaseDir)
 	if _, err := os.Stat(path.BaseDir); os.IsNotExist(err) {
 		os.Mkdir(path.BaseDir, os.FileMode(0775))
 	}
