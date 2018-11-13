@@ -7,6 +7,7 @@ import (
 	"golang-server/service"
 	"net/http"
 	"path/filepath"
+	"strings"
 )
 
 type CompetitorController struct{}
@@ -15,6 +16,8 @@ func (cc CompetitorController) Init(g *echo.Group) {
 	g = g.Group("/competitor")
 
 	g.GET("", cc.getCompetitors)
+	g.PUT("/:id", cc.updateCompetitor)
+	g.GET("/image/:shard/:imageName", cc.getImage)
 	g.POST("/image", cc.saveImage)
 }
 
@@ -36,6 +39,24 @@ func (CompetitorController) getCompetitors(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 	return c.JSON(http.StatusOK, competitors)
+}
+
+func (CompetitorController) updateCompetitor(c echo.Context) error {
+	updated := new(model.Competitor)
+	if err := c.Bind(updated); err != nil {
+		return c.NoContent(http.StatusBadRequest)
+	}
+
+	if err := service.CompetitorService.Update(updated); err != nil {
+		return c.NoContent(http.StatusInternalServerError)
+	}
+	return c.NoContent(http.StatusOK)
+}
+
+func (CompetitorController) getImage(c echo.Context) error {
+	shard := c.Param("shard")
+	imageName := c.Param("imageName")
+	return c.File(strings.Join([]string{"image", shard, imageName}, string(filepath.Separator)))
 }
 
 func (CompetitorController) saveImage(c echo.Context) error {
@@ -75,7 +96,7 @@ func (CompetitorController) saveImage(c echo.Context) error {
 		ImageUrl: strPath,
 		MatchID:  match.ID,
 	}
-	if _, err := service.CompetitorService.Save(competitor); err != nil {
+	if _, err := service.CompetitorService.Save(competitor, match); err != nil {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 

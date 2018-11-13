@@ -29,6 +29,10 @@ func (repo *MysqlRepository) Save(model interface{}) (err error) {
 	})
 }
 
+func (repo *MysqlRepository) Update(model interface{}, updated interface{}) (err error) {
+	return db.Model(model).Updates(updated).Error
+}
+
 func (repo *MysqlRepository) Insert(tx *gorm.DB, model interface{}) (err error) {
 	if !tx.NewRecord(model) {
 		return err

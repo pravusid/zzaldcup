@@ -14,8 +14,7 @@ type competitorService struct {
 }
 
 func (svc *competitorService) FindLatest(competitors *[]model.Competitor, criteria *model.Competitor) (*[]model.Competitor, error) {
-	err := svc.repository.FindWithCursor(competitors, criteria)
-	return competitors, err
+	return competitors, svc.repository.FindWithCursor(competitors, criteria)
 }
 
 func (svc *competitorService) Save(competitor *model.Competitor) (*model.Competitor, error) {
@@ -33,4 +32,14 @@ func (svc *competitorService) SaveFile(src io.Reader, ext string) (path *model.I
 	}
 
 	return path, FileService.CreateFile(path, &buffer)
+}
+
+func (svc *competitorService) Update(updated *model.Competitor) error {
+	// TODO: user > match > competitor
+	original := new(model.Competitor)
+	original.ID = updated.ID
+	if err := svc.repository.FindOne(original); err != nil {
+		return err
+	}
+	return svc.repository.Update(updated, &model.Competitor{Caption: updated.Caption})
 }
