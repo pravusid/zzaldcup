@@ -23,10 +23,10 @@ func (svc *competitorService) Save(competitor *model.Competitor, match *model.Ma
 	if err := svc.repository.Count(&count, &model.Competitor{MatchID: competitor.MatchID}); err != nil {
 		return err
 	}
-	if count >= match.Quota {
-		return errors.New("error: sufficient competitors")
+	if count < match.Quota {
+		return svc.repository.Save(competitor)
 	}
-	return svc.repository.Save(competitor)
+	return errors.New("error: sufficient competitors")
 }
 
 func (svc *competitorService) SaveFile(src io.Reader, ext string) (*model.ImagePath, error) {
@@ -54,4 +54,9 @@ func (svc *competitorService) Update(updated *model.Competitor) error {
 		return err
 	}
 	return svc.repository.Update(updated, &model.Competitor{Caption: updated.Caption})
+}
+
+func (svc *competitorService) Delete(toDelete *model.Competitor) error {
+	// TODO: user > match > competitor
+	return svc.repository.Delete(toDelete)
 }

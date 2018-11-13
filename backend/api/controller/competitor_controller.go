@@ -17,6 +17,7 @@ func (cc CompetitorController) Init(g *echo.Group) {
 
 	g.GET("", cc.getCompetitors)
 	g.PUT("/:id", cc.updateCompetitor)
+	g.DELETE("/:id", cc.deleteCompetitor)
 	g.GET("/image/:shard/:imageName", cc.getImage)
 	g.POST("/image", cc.saveImage)
 }
@@ -42,12 +43,27 @@ func (CompetitorController) getCompetitors(c echo.Context) error {
 }
 
 func (CompetitorController) updateCompetitor(c echo.Context) error {
+	competitorId := helper.ParseInt(c.Param("id"), 0)
 	updated := new(model.Competitor)
-	if err := c.Bind(updated); err != nil {
+	if err := c.Bind(updated); err != nil || competitorId != updated.ID {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
 	if err := service.CompetitorService.Update(updated); err != nil {
+		return c.NoContent(http.StatusInternalServerError)
+	}
+	return c.NoContent(http.StatusOK)
+}
+
+func (CompetitorController) deleteCompetitor(c echo.Context) error {
+	competitor := new(model.Competitor)
+	competitor.ID = helper.ParseInt(c.Param("id"), 0)
+	if competitor.ID == 0 {
+		return c.NoContent(http.StatusInternalServerError)
+	}
+
+	err := service.CompetitorService.Delete(competitor)
+	if err != nil {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 	return c.NoContent(http.StatusOK)

@@ -30,15 +30,19 @@ func (repo *MysqlRepository) Save(model interface{}) error {
 	})
 }
 
-func (repo *MysqlRepository) Update(model interface{}, updated interface{}) error {
-	return db.Model(model).Updates(updated).Error
-}
-
 func (repo *MysqlRepository) Insert(tx *gorm.DB, model interface{}) error {
 	if !tx.NewRecord(model) {
 		return errors.New("repository: record already exists")
 	}
 	return tx.Create(model).Error
+}
+
+func (repo *MysqlRepository) Update(model interface{}, updated interface{}) error {
+	return db.Model(model).Updates(updated).Error
+}
+
+func (repo *MysqlRepository) Delete(model interface{}) error {
+	return db.Delete(model).Error
 }
 
 func (repo *MysqlRepository) DefaultJob(fn Job) error {

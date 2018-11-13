@@ -35,9 +35,9 @@ func (svc *matchService) FindOne(id uint64) (*model.Match, error) {
 
 func (svc *matchService) FindOneByMatchName(matchName string) (*model.Match, error) {
 	match := new(model.Match)
-	match.MatchName = matchName
-	err := svc.repository.FindOne(match)
-	return match, err
+	return match, svc.repository.DefaultJob(func(db *gorm.DB) error {
+		return db.Where("match_name = ?", matchName).Find(match).Error
+	})
 }
 
 func (svc *matchService) FindOneAndRelatedByMatchName(matchName string) (*model.Match, error) {

@@ -61,7 +61,6 @@ func (MatchController) getMatch(c echo.Context) error {
 	var err error
 	if c.QueryParam("related") == "true" {
 		match, err = service.MatchService.FindOneAndRelatedByMatchName(matchName)
-		c.Logger().Info(match)
 	} else {
 		match, err = service.MatchService.FindOneByMatchName(matchName)
 	}
