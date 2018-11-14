@@ -10,7 +10,7 @@ func TestMatchService_isAvailable(t *testing.T) {
 	quota := 32
 
 	// WHEN
-	result := MatchService.isAvailable(quota)
+	result := Match.isAvailable(quota)
 
 	// THEN
 	assert.NoError(t, result)
@@ -21,7 +21,7 @@ func TestMatchService_isAvailable_invalid(t *testing.T) {
 	quota := 48
 
 	// WHEN
-	result := MatchService.isAvailable(quota)
+	result := Match.isAvailable(quota)
 
 	// THEN
 	assert.Error(t, result)
@@ -33,7 +33,7 @@ func TestMatchService_isSuitablePayload(t *testing.T) {
 	quota := 64
 
 	// WHEN
-	result := MatchService.isSuitablePayload(sizeOfCompetitors, quota)
+	result := Match.isSuitablePayload(sizeOfCompetitors, quota)
 
 	// THEN
 	assert.True(t, result)
@@ -45,7 +45,7 @@ func TestMatchService_isSuitablePayload_invalid(t *testing.T) {
 	quota := 64
 
 	// WHEN
-	result := MatchService.isSuitablePayload(sizeOfCompetitors, quota)
+	result := Match.isSuitablePayload(sizeOfCompetitors, quota)
 
 	// THEN
 	assert.False(t, result)

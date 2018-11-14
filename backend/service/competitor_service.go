@@ -17,7 +17,8 @@ type competitorService struct {
 
 func (svc *competitorService) FindLatest(competitors *[]model.Competitor, criteria *model.Competitor) (*[]model.Competitor, error) {
 	return competitors, svc.mysql.DefaultJob(func(db *gorm.DB) error {
-		return db.Where(" match_id = ? AND id >= ?", criteria.MatchID, criteria.ID).Find(competitors).Error
+		return db.Order("id DESC").Where(
+			" match_id = ? AND id >= ?", criteria.MatchID, criteria.ID).Find(competitors).Error
 	})
 }
 

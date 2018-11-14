@@ -78,9 +78,6 @@ func (svc *matchService) SavePrivateMatch(match *model.PrivateMatch) error {
 }
 
 func (svc *matchService) UpdateAvailability(tx *gorm.DB, criteria *model.Match, after int, before int) error {
-	if err := tx.Find(&criteria).Error; err != nil {
-		return err
-	}
 	if after > criteria.Quota {
 		return errors.New("error: sufficient competitors")
 	}

@@ -15,7 +15,10 @@ func main() {
 	connectAll()
 
 	e := echo.New()
-	e.Debug = true
+	if os.Getenv("PROFILE") == "dev" {
+		e.Debug = true
+	}
+	e.Validator = model.Validator
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -25,10 +28,7 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	e.Validator = model.Validator
-
 	api.Routes(e)
-
 	e.Logger.Fatal(e.Start(os.Getenv("PORT")))
 }
 

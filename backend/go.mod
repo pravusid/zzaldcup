@@ -10,7 +10,7 @@ require (
 	github.com/jinzhu/inflection v0.0.0-20180308033659-04140366298a // indirect
 	github.com/joho/godotenv v1.3.0
 	github.com/labstack/echo v3.2.1+incompatible
-	github.com/labstack/gommon v0.2.7 // indirect
+	github.com/labstack/gommon v0.2.7
 	github.com/mattn/go-colorable v0.0.9 // indirect
 	github.com/mattn/go-isatty v0.0.4 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

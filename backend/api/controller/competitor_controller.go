@@ -62,8 +62,7 @@ func (CompetitorController) deleteCompetitor(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	err := service.Competitor.DeleteOne(competitor)
-	if err != nil {
+	if err := service.Competitor.DeleteOne(competitor); err != nil {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 	return c.NoContent(http.StatusOK)

@@ -3,6 +3,7 @@ package mysql
 import (
 	"errors"
 	"github.com/jinzhu/gorm"
+	"github.com/labstack/gommon/log"
 	"golang-server/model"
 )
 
@@ -55,10 +56,12 @@ func (repo *MysqlRepository) TransactionalJob(fn Job) error {
 	tx := db.Begin()
 	defer func() {
 		if r := recover(); r != nil {
+			log.Info(r)
 			tx.Rollback()
 		}
 	}()
 	if err := fn(tx); err != nil {
+		log.Info(err)
 		tx.Rollback()
 		return err
 	}
