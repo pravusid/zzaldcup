@@ -21,7 +21,7 @@ func (mc MatchController) Init(g *echo.Group) {
 
 func (MatchController) getAllMatches(c echo.Context) error {
 	pageable := new(model.Pageable).Of(c.QueryParams())
-	matches, err := service.MatchService.FindAll(pageable)
+	matches, err := service.Match.FindAll(pageable)
 	if err != nil {
 		return c.NoContent(http.StatusNotFound)
 	}
@@ -42,12 +42,12 @@ func (MatchController) createMatch(c echo.Context) error {
 			Match: *match,
 			UUID:  uuid.NewV4().String(),
 		}
-		if err := service.MatchService.SavePrivate(&privateMatch); err != nil {
+		if err := service.Match.SavePrivateMatch(&privateMatch); err != nil {
 			return c.NoContent(http.StatusInternalServerError)
 		}
 
 	} else {
-		if err := service.MatchService.Save(match); err != nil {
+		if err := service.Match.SaveOne(match); err != nil {
 			return c.NoContent(http.StatusInternalServerError)
 		}
 	}
@@ -60,9 +60,9 @@ func (MatchController) getMatch(c echo.Context) error {
 	var match *model.Match
 	var err error
 	if c.QueryParam("related") == "true" {
-		match, err = service.MatchService.FindOneAndRelatedByMatchName(matchName)
+		match, err = service.Match.FindOneAndRelatedByMatchName(matchName)
 	} else {
-		match, err = service.MatchService.FindOneByMatchName(matchName)
+		match, err = service.Match.FindOneByMatchName(matchName)
 	}
 	if err != nil {
 		return c.NoContent(http.StatusNotFound)
@@ -72,7 +72,7 @@ func (MatchController) getMatch(c echo.Context) error {
 
 func (MatchController) getMatchesOfUser(c echo.Context) error {
 	pageable := new(model.Pageable).Of(c.QueryParams())
-	matches, err := service.MatchService.FindUserMatches(pageable)
+	matches, err := service.Match.FindAllOfUser(pageable)
 	if err != nil {
 		return c.NoContent(http.StatusNotFound)
 	}

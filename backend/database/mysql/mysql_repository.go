@@ -6,6 +6,8 @@ import (
 	"golang-server/model"
 )
 
+var BaseMysqlRepository = &MysqlRepository{}
+
 type (
 	MysqlRepository struct{}
 
@@ -51,9 +53,14 @@ func (repo *MysqlRepository) DefaultJob(fn Job) error {
 
 func (repo *MysqlRepository) TransactionalJob(fn Job) error {
 	tx := db.Begin()
-	defer tx.Commit()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 	if err := fn(tx); err != nil {
 		tx.Rollback()
+		return err
 	}
-	return nil
+	return tx.Commit().Error
 }

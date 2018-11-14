@@ -26,7 +26,7 @@ func (CompetitorController) getCompetitors(c echo.Context) error {
 	competitorId := helper.ParseInt(c.QueryParam("id"), 0)
 	matchId := helper.ParseInt(c.QueryParam("matchId"), 0)
 
-	match, err := service.MatchService.FindOne(matchId)
+	match, err := service.Match.FindOne(matchId)
 	if competitorId == 0 || matchId == 0 || err != nil {
 		return c.NoContent(http.StatusNotFound)
 	}
@@ -36,7 +36,7 @@ func (CompetitorController) getCompetitors(c echo.Context) error {
 	criteria.MatchID = match.ID
 
 	competitors := make([]model.Competitor, 16)
-	if _, err := service.CompetitorService.FindLatest(&competitors, criteria); err != nil {
+	if _, err := service.Competitor.FindLatest(&competitors, criteria); err != nil {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 	return c.JSON(http.StatusOK, competitors)
@@ -49,7 +49,7 @@ func (CompetitorController) updateCompetitor(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	if err := service.CompetitorService.Update(updated); err != nil {
+	if err := service.Competitor.UpdateOne(updated); err != nil {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 	return c.NoContent(http.StatusOK)
@@ -62,7 +62,7 @@ func (CompetitorController) deleteCompetitor(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	err := service.CompetitorService.Delete(competitor)
+	err := service.Competitor.DeleteOne(competitor)
 	if err != nil {
 		return c.NoContent(http.StatusInternalServerError)
 	}
@@ -81,7 +81,6 @@ func (CompetitorController) saveImage(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 	contentType := file.Header.Get("Content-Type")
-	c.Logger().Info(contentType)
 	if !(contentType == "image/jpeg" || contentType == "image/png") {
 		return c.NoContent(http.StatusBadRequest)
 	}
@@ -92,7 +91,7 @@ func (CompetitorController) saveImage(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	path, err := service.CompetitorService.SaveFile(src, filepath.Ext(file.Filename))
+	path, err := service.Competitor.SaveFile(src, filepath.Ext(file.Filename))
 	strPath, pathErr := path.StringPath()
 	if err != nil || pathErr != nil {
 		return c.NoContent(http.StatusInternalServerError)
@@ -103,7 +102,7 @@ func (CompetitorController) saveImage(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 	matchId := uint64(values["matchId"].(float64))
-	match, err := service.MatchService.FindOne(matchId)
+	match, err := service.Match.FindOne(matchId)
 	if matchId == 0 || err != nil {
 		return c.NoContent(http.StatusNotFound)
 	}
@@ -112,7 +111,7 @@ func (CompetitorController) saveImage(c echo.Context) error {
 		ImageUrl: strPath,
 		MatchID:  match.ID,
 	}
-	if err := service.CompetitorService.Save(competitor, match); err != nil {
+	if err := service.Competitor.SaveOne(competitor, match); err != nil {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
